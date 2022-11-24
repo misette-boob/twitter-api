@@ -1,0 +1,21 @@
+---
+version: "2"
+services:
+  app:
+    image: nicbet/phoenix:1.6.11
+    build: .
+    ports:
+      - "4000:4000"
+    volumes:
+      - ./src:/app
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_HOST=db
+    depends_on:
+      - db
+  db:
+    image: postgres:12
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
