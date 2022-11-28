@@ -1,0 +1,36 @@
+<h1>Show Product</h1>
+
+<ul>
+
+  <li>
+    <strong>Title:</strong>
+    <%= @product.title %>
+  </li>
+
+  <li>
+    <strong>Description:</strong>
+    <%= @product.description %>
+  </li>
+
+  <li>
+    <strong>Price:</strong>
+    <%= @product.price %>
+  </li>
+
+  <li>
+    <strong>Views:</strong>
+    <%= @product.views %>
+  </li>
+
+  <li>
+    <strong>Categories:</strong>
+    <%= for cat <- @product.categories do %>
+      <%= cat.title %>
+      <br>
+    <% end %>
+  </li>
+
+</ul>
+
+<span><%= link "Edit", to: Routes.product_path(@conn, :edit, @product) %></span> |
+<span><%= link "Back", to: Routes.product_path(@conn, :index) %></span>

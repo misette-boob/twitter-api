@@ -9,3 +9,7 @@
 #
 # We recommend using the bang functions (`insert!`, `update!`
 # and so on) as they will fail if something goes wrong.
+
+for title <- ["Home Improvement", "Power Tools", "Gardening", "Books"] do
+  {:ok, _} = Twitter.Catalog.create_category(%{title: title})
+end
