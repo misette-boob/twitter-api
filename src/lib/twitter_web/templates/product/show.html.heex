@@ -1,5 +1,9 @@
 <h1>Show Product</h1>
 
+ <%= link "Add to cart",
+   to: Routes.cart_item_path(@conn, :create, product_id: @product.id),
+   method: :post %>
+
 <ul>
 
   <li>
