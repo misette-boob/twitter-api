@@ -3,7 +3,13 @@ version: "2"
 services:
   app:
     image: nicbet/phoenix:1.6.11
-    build: .
+    build:
+      context: .
+      args:
+        - "UID=${UID:-1000}"
+        - "GID=${GID:-1000}"
+    env_file:
+      - ".env"
     ports:
       - "4000:4000"
     volumes:
