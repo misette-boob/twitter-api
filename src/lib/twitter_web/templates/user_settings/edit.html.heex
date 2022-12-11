@@ -15,6 +15,10 @@
   <%= text_input f, :name, required: true %>
   <%= error_tag f, :name %>
 
+  <%= label f, :date_birth %>
+  <%= date_input f, :date_birth %>
+  <%= error_tag f, :date_birth %>
+
   <div>
     <%= submit "Save" %>
   </div>

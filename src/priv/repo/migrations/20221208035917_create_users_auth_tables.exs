@@ -8,6 +8,7 @@ defmodule Twitter.Repo.Migrations.CreateUsersAuthTables do
       add :email, :citext, null: false
       add :hashed_password, :string, null: false
       add :name, :string, null: false
+      add :date_birth, :date
       add :confirmed_at, :naive_datetime
       timestamps()
     end

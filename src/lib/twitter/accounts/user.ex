@@ -3,13 +3,14 @@ defmodule Twitter.Accounts.User do
   import Ecto.Changeset
 
   @data_required_fields ~w(name)a
-  @data_optional_fields ~w()a
+  @data_optional_fields ~w(date_birth)a
 
   schema "users" do
     field :email, :string
     field :password, :string, virtual: true, redact: true
     field :name, :string
     field :hashed_password, :string, redact: true
+    field :date_birth, :date
     field :confirmed_at, :naive_datetime
 
     timestamps()
