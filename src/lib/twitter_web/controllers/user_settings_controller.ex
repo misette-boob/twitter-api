@@ -4,10 +4,26 @@ defmodule TwitterWeb.UserSettingsController do
   alias Twitter.Accounts
   alias TwitterWeb.UserAuth
 
+  plug :assign_user_data_changeset
   plug :assign_email_and_password_changesets
 
   def edit(conn, _params) do
     render(conn, "edit.html")
+  end
+
+  def update(conn, %{"action" => "update_user"} = params) do
+    %{"user" => user_params} = params
+    user = conn.assigns.current_user
+
+    case Accounts.update_user_data(user, user_params) do
+      {:ok, applied_user} ->
+        conn
+        |> put_flash(:info, "User changed successfully.")
+        |> redirect(to: Routes.user_settings_path(conn, :edit))
+
+      {:error, changeset} ->
+        render(conn, "edit.html", user_changeset: changeset)
+    end
   end
 
   def update(conn, %{"action" => "update_email"} = params) do
@@ -70,5 +86,12 @@ defmodule TwitterWeb.UserSettingsController do
     conn
     |> assign(:email_changeset, Accounts.change_user_email(user))
     |> assign(:password_changeset, Accounts.change_user_password(user))
+  end
+
+  defp assign_user_data_changeset(conn, _opts) do
+    user = conn.assigns.current_user
+
+    conn
+    |> assign(:user_changeset, Accounts.change_user_data(user))
   end
 end

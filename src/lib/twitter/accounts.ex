@@ -109,6 +109,19 @@ defmodule Twitter.Accounts do
   end
 
   @doc """
+  Returns an `%Ecto.Changeset{}` for changing the user data.
+
+  ## Examples
+
+      iex> change_user_email(user)
+      %Ecto.Changeset{data: %User{}}
+
+  """
+  def change_user_data(user, attrs \\ %{}) do
+    User.user_changeset(user, attrs)
+  end
+
+  @doc """
   Emulates that the email will change without actually changing
   it in the database.
 
@@ -126,6 +139,23 @@ defmodule Twitter.Accounts do
     |> User.email_changeset(attrs)
     |> User.validate_current_password(password)
     |> Ecto.Changeset.apply_action(:update)
+  end
+
+  @doc """
+  Update user fields except email and password
+
+  ## Examples
+
+      iex> update_user_data(user, %{name: ...})
+      {:ok, %User{}}
+
+      iex> update_user_data(user, %{name: ...})
+      {:error, %Ecto.Changeset{}}
+  """
+  def update_user_data(user, attrs) do
+    user
+    |> User.user_changeset(attrs)
+    |> Repo.update()
   end
 
   @doc """

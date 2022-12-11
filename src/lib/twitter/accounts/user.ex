@@ -2,6 +2,9 @@ defmodule Twitter.Accounts.User do
   use Ecto.Schema
   import Ecto.Changeset
 
+  @data_required_fields ~w(name)a
+  @data_optional_fields ~w()a
+
   schema "users" do
     field :email, :string
     field :password, :string, virtual: true, redact: true
@@ -34,6 +37,12 @@ defmodule Twitter.Accounts.User do
     |> cast(attrs, [:email, :password, :name])
     |> validate_email()
     |> validate_password(opts)
+    |> validate_name()
+  end
+
+  def validate_data(changeset) do
+    changeset
+    |> validate_required(@data_required_fields)
     |> validate_name()
   end
 
@@ -90,6 +99,15 @@ defmodule Twitter.Accounts.User do
       %{changes: %{email: _}} = changeset -> changeset
       %{} = changeset -> add_error(changeset, :email, "did not change")
     end
+  end
+
+  @doc """
+  A user changeset for changing user data.
+  """
+  def user_changeset(user, attrs) do
+    user
+    |> cast(attrs, @data_required_fields ++ @data_optional_fields)
+    |> validate_data()
   end
 
   @doc """
