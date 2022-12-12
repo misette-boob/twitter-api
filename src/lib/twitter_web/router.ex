@@ -17,6 +17,10 @@ defmodule TwitterWeb.Router do
     plug :accepts, ["json"]
   end
 
+  pipeline :apiAuth do
+    plug Twitter.Api.Guardian.AuthPipeline
+  end
+
   scope "/", TwitterWeb do
     pipe_through [:browser]
 
@@ -52,9 +56,17 @@ defmodule TwitterWeb.Router do
   end
 
   # Other scopes may use custom stacks.
-  # scope "/api", TwitterWeb do
-  #   pipe_through :api
-  # end
+  scope "/api", TwitterWeb.Api do
+    pipe_through :api
+
+    post "/session/new", SessionController, :new
+  end
+
+  scope "/api", TwitterWeb.Api do
+    pipe_through [:api, :apiAuth]
+
+    post "/session/refresh", SessionController, :refresh
+  end
 
   # Enables LiveDashboard only for development
   #
