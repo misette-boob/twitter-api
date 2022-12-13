@@ -18,10 +18,9 @@ defmodule TwitterWeb.Api.SessionController do
 				|> render("tokens.json", %{access_token: access_token, refresh_token: refresh_token})
 
 			{:error, :unauthorized} ->
-				body = Jason.encode!(%{error: "unauthorized"})
-
 				conn
-				|> send_resp(401, body)
+				|> put_status(:unauthorized)
+				|> render("error_token.json", %{error: "unauthorized"})
 		end
 	end
 
@@ -32,11 +31,10 @@ defmodule TwitterWeb.Api.SessionController do
 				|> put_status(:created)
 				|> render("access_token.json", %{access_token: new_access_token})
 			
-			{:error, _reason} ->
-				body = Jason.encode!(%{error: "unauthorized"})
-
+			{:error, reason} ->
 				conn
-				|> send_resp(401, body)	
+				|> put_status(:unauthorized)
+				|> render("error_token.json", %{error: to_string(reason)})
 		end
 	end
 end

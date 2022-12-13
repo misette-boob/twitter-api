@@ -8,4 +8,8 @@ defmodule TwitterWeb.Api.SessionView do
 	def render("access_token.json", %{access_token: access_token}) do
 		%{access_token: access_token}
 	end
+
+	def render("error_token.json", %{error: message}) do
+		%{error: message}
+	end
 end
