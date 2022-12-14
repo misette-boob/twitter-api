@@ -66,6 +66,7 @@ defmodule TwitterWeb.Router do
     pipe_through [:api, :apiAuth]
 
     post "/session/refresh", SessionController, :refresh
+    resources "/users", UserController, only: [:index, :show, :update]
   end
 
   # Enables LiveDashboard only for development
