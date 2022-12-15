@@ -19,6 +19,7 @@ defmodule TwitterWeb.Router do
 
   pipeline :apiAuth do
     plug Twitter.Api.Guardian.AuthPipeline
+    plug Twitter.Plugs.FetchCurrentUser
   end
 
   scope "/", TwitterWeb do
