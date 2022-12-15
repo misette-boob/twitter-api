@@ -13,6 +13,8 @@ defmodule Twitter.Accounts.User do
     field :date_birth, :date
     field :confirmed_at, :naive_datetime
 
+    has_many :tweets, Twitter.Blog.Tweet
+
     timestamps()
   end
 
