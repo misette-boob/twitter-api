@@ -64,11 +64,12 @@ defmodule TwitterWeb.Router do
     post "/session/new", SessionController, :new
   end
 
-  scope "/api", TwitterWeb.Api do
+  scope "/api", TwitterWeb.Api, as: :api do
     pipe_through [:api, :apiAuth]
 
     post "/session/refresh", SessionController, :refresh
     resources "/users", UserController, only: [:index, :show, :update]
+    resources "/tweets", TweetController, except: [:new, :edit]
   end
 
   # Enables LiveDashboard only for development
