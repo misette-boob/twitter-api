@@ -6,7 +6,7 @@ defmodule Twitter.Api.Guardian.AuthPipeline do
 		module: Twitter.Api.Guardian,
 		error_handler: Twitter.Api.Guardian.AuthErrorHandler
 
-	plug(Guardian.Plug.VerifyHeader, claims: @claims, scheme: "Bearer")
-	plug(Guardian.Plug.EnsureAuthenticated)
-	plug(Guardian.Plug.LoadResource, ensure: true)
+	plug Guardian.Plug.VerifyHeader, claims: @claims, scheme: "Bearer"
+	plug Guardian.Plug.EnsureAuthenticated
+	plug Guardian.Plug.LoadResource, ensure: true
 end
