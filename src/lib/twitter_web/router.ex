@@ -62,6 +62,7 @@ defmodule TwitterWeb.Router do
     pipe_through :api
 
     post "/session/new", SessionController, :new
+    post "/users", UserController, :create
   end
 
   scope "/api", TwitterWeb.Api, as: :api do

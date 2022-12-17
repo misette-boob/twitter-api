@@ -91,4 +91,8 @@ defmodule Twitter.Api.Accounts do
     Accounts.update_user_data(user, user_params)
   end
 
+  def create_user(user_params) do
+    Accounts.register_user(user_params)
+  end
+
 end
