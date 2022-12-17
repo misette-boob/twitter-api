@@ -11,6 +11,19 @@ defmodule TwitterWeb.Api.TweetController do
     render(conn, "index.json", tweets: tweets)
   end
 
+  def show(conn, %{"id" => id, "comments" => comments}) do
+    tweet = Blog.get_tweet!(id)
+
+    case comments do
+      "1" ->
+        tweet = Blog.get_tweet_with_comments!(id)
+        render(conn, "show_with_comments.json", tweet: tweet)
+      _ ->
+        tweet = Blog.get_tweet!(id)
+        render(conn, "show.json", tweet: tweet)
+    end
+  end
+
   def show(conn, %{"id" => id}) do
     tweet = Blog.get_tweet!(id)
     render(conn, "show.json", tweet: tweet)

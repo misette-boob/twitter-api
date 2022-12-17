@@ -57,6 +57,11 @@ defmodule Twitter.Blog do
   """
   def get_tweet!(id), do: Repo.get!(Tweet, id)
 
+  def get_tweet_with_comments!(id) do
+    Repo.get!(Tweet, id)
+    |> Repo.preload(:comments)
+  end
+
   @doc """
   Creates a tweet.
 
