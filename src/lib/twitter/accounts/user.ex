@@ -14,6 +14,7 @@ defmodule Twitter.Accounts.User do
     field :confirmed_at, :naive_datetime
 
     has_many :tweets, Twitter.Blog.Tweet
+    has_many :comments, Twitter.Blog.Comment
 
     timestamps()
   end

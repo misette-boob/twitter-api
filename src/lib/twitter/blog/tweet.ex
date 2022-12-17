@@ -7,6 +7,7 @@ defmodule Twitter.Blog.Tweet do
     field :title, :string
 
     belongs_to :user, Twitter.Accounts.User
+    has_many :comments, Twitter.Blog.Comment
 
     timestamps()
   end

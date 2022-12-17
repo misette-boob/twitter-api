@@ -69,7 +69,10 @@ defmodule TwitterWeb.Router do
 
     post "/session/refresh", SessionController, :refresh
     resources "/users", UserController, only: [:index, :show, :update]
-    resources "/tweets", TweetController, except: [:new, :edit]
+    resources "/tweets", TweetController, except: [:new, :edit] do
+      resources "/comments", CommentController, except: [:new, :edit]
+    end
+    get "/comments", CommentController, :index
   end
 
   # Enables LiveDashboard only for development
