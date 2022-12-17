@@ -19,12 +19,17 @@ defmodule Twitter.Blog do
       [%Tweet{}, ...]
 
   """
-  def list_tweets do
+  def list_tweets(%{"user_id" => user_id}) do
+    Repo.all(from t in Tweet,
+      where: t.user_id == ^user_id)
+  end
+
+  def list_tweets(_params) do
     Repo.all(Tweet)
   end
 
-  def list_tweets(user_id) do
-    Repo.get_by(Tweet, user_id: user_id)
+  def list_tweets do
+    Repo.all(Tweet)
   end
 
   @doc """

@@ -4,15 +4,9 @@ defmodule TwitterWeb.TweetController do
   alias Twitter.Blog
   alias Twitter.Blog.Tweet
 
-  def index(conn, _params) do
-    tweets = Blog.list_tweets()
+  def index(conn, params) do
+    tweets = Blog.list_tweets(params)
     render(conn, "index.html", tweets: tweets, current_user_id: conn.assigns.current_user.id)
-  end
-
-  #todo not work
-  def index(conn, %{"user_id" => user_id}) do
-    tweets = Blog.list_tweets(user_id)
-    render(conn, "index.html", tweets: tweets)
   end
 
   def new(conn, _params) do

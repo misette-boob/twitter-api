@@ -17,5 +17,7 @@ defmodule Twitter.Blog.Tweet do
     tweet
     |> cast(attrs, [:title, :body])
     |> validate_required([:title, :body])
+    |> validate_length(:title, min: 1, max: 70)
+    |> validate_length(:title, min: 1, max: 255)
   end
 end
