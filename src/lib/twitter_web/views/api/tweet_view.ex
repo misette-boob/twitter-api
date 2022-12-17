@@ -15,7 +15,7 @@ defmodule TwitterWeb.Api.TweetView do
       id: tweet.id,
       title: tweet.title,
       body: tweet.body,
-      author: tweet.user_id
+      author_id: tweet.user_id
     }
   end
 end

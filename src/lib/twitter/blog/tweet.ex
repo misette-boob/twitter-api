@@ -7,6 +7,7 @@ defmodule Twitter.Blog.Tweet do
     field :title, :string
 
     belongs_to :user, Twitter.Accounts.User
+    has_many :comments, Twitter.Blog.Comment
 
     timestamps()
   end
@@ -16,5 +17,7 @@ defmodule Twitter.Blog.Tweet do
     tweet
     |> cast(attrs, [:title, :body])
     |> validate_required([:title, :body])
+    |> validate_length(:title, min: 1, max: 70)
+    |> validate_length(:title, min: 1, max: 255)
   end
 end

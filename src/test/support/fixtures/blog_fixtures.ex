@@ -18,4 +18,18 @@ defmodule Twitter.BlogFixtures do
 
     tweet
   end
+
+  @doc """
+  Generate a comment.
+  """
+  def comment_fixture(attrs \\ %{}) do
+    {:ok, comment} =
+      attrs
+      |> Enum.into(%{
+        body: "some body"
+      })
+      |> Twitter.Blog.create_comment()
+
+    comment
+  end
 end

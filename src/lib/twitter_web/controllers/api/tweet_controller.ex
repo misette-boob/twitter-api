@@ -20,7 +20,6 @@ defmodule TwitterWeb.Api.TweetController do
     with {:ok, %Tweet{} = tweet} <- Blog.create_tweet(conn.assigns.current_user, tweet_params) do
       conn
       |> put_status(:created)
-      |> put_resp_header("location", Routes.tweet_path(conn, :show, tweet))
       |> render("show.json", tweet: tweet)
     end
   end
