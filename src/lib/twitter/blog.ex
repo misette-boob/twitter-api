@@ -11,7 +11,7 @@ defmodule Twitter.Blog do
   alias Twitter.Blog.Comment
 
   @doc """
-  Returns the list of tweets.
+  Returns the list of tweets by user.
 
   ## Examples
 
@@ -24,6 +24,15 @@ defmodule Twitter.Blog do
       where: t.user_id == ^user_id)
   end
 
+  @doc """
+  Returns the list of tweets.
+
+  ## Examples
+
+      iex> list_tweets()
+      [%Tweet{}, ...]
+
+  """
   def list_tweets(_params) do
     Repo.all(Tweet)
   end
@@ -115,7 +124,7 @@ defmodule Twitter.Blog do
   end
 
   @doc """
-  Returns the list of comments.
+  Returns the list of comments by tweet.
 
   ## Examples
 
