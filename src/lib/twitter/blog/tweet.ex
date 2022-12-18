@@ -5,6 +5,7 @@ defmodule Twitter.Blog.Tweet do
   schema "tweets" do
     field :body, :string
     field :title, :string
+    field :number_likes, :integer, virtual: true, default: 0
 
     belongs_to :user, Twitter.Accounts.User
     has_many :comments, Twitter.Blog.Comment

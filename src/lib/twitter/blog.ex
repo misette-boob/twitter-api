@@ -53,15 +53,19 @@ defmodule Twitter.Blog do
       ** (Ecto.NoResultsError)
 
   """
-  def get_tweet!(id), do: Repo.get!(Tweet, id)
+  def get_tweet!(id) do
+    tweet = Repo.get!(Tweet, id)
 
-  def get_tweet_with_liked_users!(id) do
-    Repo.get!(Tweet, id)
-    |> Repo.preload(:liked_by_users)
+    #todo Разобраться как засунуть это в схему
+    number_likes = tweet
+    |> Ecto.assoc(:liked_by_users)
+    |> Repo.aggregate(:count, :id)
+
+    Map.put(tweet, :number_likes, number_likes)
   end
 
   def get_tweet_with_comments!(id) do
-    Repo.get!(Tweet, id)
+    get_tweet!(id)
     |> Repo.preload(:comments)
   end
 
