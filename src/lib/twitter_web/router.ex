@@ -69,7 +69,11 @@ defmodule TwitterWeb.Router do
     pipe_through [:api, :apiAuth]
 
     post "/session/refresh", SessionController, :refresh
-    resources "/users", UserController, only: [:index, :show, :update]
+    resources "/users", UserController, only: [:index, :show, :update] do
+      post "/subscription", UserController, :subscribe, as: :subscription
+      delete "/subscription", UserController, :unsubscribe, as: :subscription
+    end
+
     get "/tweets/liked", TweetController, :liked, as: :liked
     resources "/tweets", TweetController, except: [:new, :edit] do
       resources "/comments", CommentController, except: [:new, :edit]

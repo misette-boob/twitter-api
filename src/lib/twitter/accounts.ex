@@ -58,7 +58,21 @@ defmodule Twitter.Accounts do
       ** (Ecto.NoResultsError)
 
   """
-  def get_user!(id), do: Repo.get!(User, id)
+  def get_user!(id) do
+    user = Repo.get!(User, id)
+
+    #todo Разобраться как засунуть это в схему
+    number_subscriptions = user
+    |> Ecto.assoc(:subscriptions)
+    |> Repo.aggregate(:count, :id)
+
+    number_subscribers = user
+    |> Ecto.assoc(:subscribers)
+    |> Repo.aggregate(:count, :id)
+
+    Map.put(user, :subscriptions, number_subscriptions)
+    |> Map.put(:subscribers, number_subscribers)
+  end
 
   ## User registration
 
@@ -76,6 +90,8 @@ defmodule Twitter.Accounts do
   """
   def register_user(attrs) do
     %User{}
+    # Maybe? @derive {Jason.Encoder, only: [:id, :name, :email, :date_birth]}
+    |> Repo.preload([:subscriptions, :subscribers])
     |> User.registration_changeset(attrs)
     |> Repo.insert()
   end
