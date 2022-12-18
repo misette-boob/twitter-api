@@ -4,35 +4,33 @@ defmodule Twitter.Blog do
   """
 
   import Ecto.Query, warn: false
+  import Twitter.Helper
+
   alias Twitter.Repo
-
   alias Twitter.Blog.Tweet
-  alias Twitter.Accounts.User
   alias Twitter.Blog.Comment
-
-  @doc """
-  Returns the list of tweets by user.
-
-  ## Examples
-
-      iex> list_tweets()
-      [%Tweet{}, ...]
-
-  """
-  def list_tweets(%{"user_id" => user_id}) do
-    Repo.all(from t in Tweet,
-      where: t.user_id == ^user_id)
-  end
+  alias Twitter.Blog.Like
+  alias Twitter.Accounts.User
 
   @doc """
   Returns the list of tweets.
 
   ## Examples
 
-      iex> list_tweets()
+      iex> list_tweets(%{"user_id" => 1})
       [%Tweet{}, ...]
 
+      iex> list_tweets(_)
+      [%Tweet{}, ...]
+
+      iex> list_tweets()
+      [%Tweet{}, ...]
   """
+  def list_tweets(%{"user_id" => user_id}) do
+    Repo.all(from t in Tweet,
+      where: t.user_id == ^user_id)
+  end
+
   def list_tweets(_params) do
     Repo.all(Tweet)
   end
@@ -55,10 +53,19 @@ defmodule Twitter.Blog do
       ** (Ecto.NoResultsError)
 
   """
-  def get_tweet!(id), do: Repo.get!(Tweet, id)
+  def get_tweet!(id) do
+    tweet = Repo.get!(Tweet, id)
+
+    #todo Разобраться как засунуть это в схему
+    number_likes = tweet
+    |> Ecto.assoc(:liked_by_users)
+    |> Repo.aggregate(:count, :id)
+
+    Map.put(tweet, :number_likes, number_likes)
+  end
 
   def get_tweet_with_comments!(id) do
-    Repo.get!(Tweet, id)
+    get_tweet!(id)
     |> Repo.preload(:comments)
   end
 
@@ -129,11 +136,14 @@ defmodule Twitter.Blog do
   end
 
   @doc """
-  Returns the list of comments by tweet.
+  Returns the list of comments.
 
   ## Examples
 
-      iex> list_comments()
+      iex> list_comments(%{"tweet_id" => 1})
+      [%Comment{}, ...]
+
+      iex> list_comments(_)
       [%Comment{}, ...]
 
   """
@@ -142,15 +152,6 @@ defmodule Twitter.Blog do
       where: t.tweet_id == ^tweet_id)
   end
 
-  @doc """
-  Returns the list of comments.
-
-  ## Examples
-
-      iex> list_comments()
-      [%Comment{}, ...]
-
-  """
   def list_comments(_params) do
     Repo.all(Comment)
   end
@@ -238,5 +239,22 @@ defmodule Twitter.Blog do
   """
   def change_comment(%Comment{} = comment, attrs \\ %{}) do
     Comment.changeset(comment, attrs)
+  end
+
+  def tweet_like(conn, tweet_id) do
+    Repo.insert!(%Like{tweet_id: maybe_to_int(tweet_id), user_id: conn.assigns.current_user.id},
+      on_conflict: :nothing)
+  end
+
+  def tweet_dislike(conn, tweet_id) do
+    Repo.delete_all(from l in Like,
+      where: l.tweet_id == ^maybe_to_int(tweet_id) and l.user_id == ^conn.assigns.current_user.id)
+  end
+
+  def list_liked_tweets(conn) do
+    current_user = conn.assigns.current_user
+    |> Repo.preload(:liked_tweets)
+
+    current_user.liked_tweets
   end
 end
