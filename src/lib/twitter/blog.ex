@@ -4,8 +4,9 @@ defmodule Twitter.Blog do
   """
 
   import Ecto.Query, warn: false
-  alias Twitter.Repo
+  import Twitter.Helper
 
+  alias Twitter.Repo
   alias Twitter.Blog.Tweet
   alias Twitter.Blog.Comment
   alias Twitter.Blog.Like
@@ -237,21 +238,12 @@ defmodule Twitter.Blog do
   end
 
   def tweet_like(conn, tweet_id) do
-    Repo.insert!(%Like{tweet_id: to_int(tweet_id), user_id: conn.assigns.current_user.id},
+    Repo.insert!(%Like{tweet_id: maybe_to_int(tweet_id), user_id: conn.assigns.current_user.id},
       on_conflict: :nothing)
   end
 
   def tweet_dislike(conn, tweet_id) do
     Repo.delete_all(from l in Like,
-      where: l.tweet_id == ^to_int(tweet_id) and l.user_id == ^conn.assigns.current_user.id)
-  end
-
-  defp to_int(value) do
-    unless is_integer(value) do
-      {int, _} = Integer.parse(value)
-      int
-    else
-      value
-    end
+      where: l.tweet_id == ^maybe_to_int(tweet_id) and l.user_id == ^conn.assigns.current_user.id)
   end
 end
