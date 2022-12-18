@@ -72,6 +72,8 @@ defmodule TwitterWeb.Router do
     resources "/users", UserController, only: [:index, :show, :update]
     resources "/tweets", TweetController, except: [:new, :edit] do
       resources "/comments", CommentController, except: [:new, :edit]
+      post "/like", TweetController, :like, as: :like
+      delete "/like", TweetController, :dislike, as: :dislike
     end
     get "/comments", CommentController, :index
   end

@@ -8,6 +8,7 @@ defmodule Twitter.Blog.Tweet do
 
     belongs_to :user, Twitter.Accounts.User
     has_many :comments, Twitter.Blog.Comment
+    many_to_many :liked_by_users, Twitter.Accounts.User, join_through: "likes"
 
     timestamps()
   end

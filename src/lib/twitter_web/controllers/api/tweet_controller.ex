@@ -12,8 +12,6 @@ defmodule TwitterWeb.Api.TweetController do
   end
 
   def show(conn, %{"id" => id, "comments" => comments}) do
-    tweet = Blog.get_tweet!(id)
-
     case comments do
       "1" ->
         tweet = Blog.get_tweet_with_comments!(id)
@@ -50,6 +48,18 @@ defmodule TwitterWeb.Api.TweetController do
 
     with {:ok, %Tweet{}} <- Blog.delete_tweet(tweet) do
       send_resp(conn, :no_content, "")
+    end
+  end
+
+  def like(conn, %{"tweet_id" => tweet_id}) do
+    with %Blog.Like{} <- Blog.tweet_like(conn, tweet_id) do
+      send_resp(conn, 201, "")
+    end
+  end
+
+  def dislike(conn, %{"tweet_id" => tweet_id}) do
+    with {_, nil} <- Blog.tweet_dislike(conn, tweet_id) do
+      send_resp(conn, 200, "")
     end
   end
 end

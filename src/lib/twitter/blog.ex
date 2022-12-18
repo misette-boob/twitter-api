@@ -7,32 +7,30 @@ defmodule Twitter.Blog do
   alias Twitter.Repo
 
   alias Twitter.Blog.Tweet
-  alias Twitter.Accounts.User
   alias Twitter.Blog.Comment
-
-  @doc """
-  Returns the list of tweets by user.
-
-  ## Examples
-
-      iex> list_tweets()
-      [%Tweet{}, ...]
-
-  """
-  def list_tweets(%{"user_id" => user_id}) do
-    Repo.all(from t in Tweet,
-      where: t.user_id == ^user_id)
-  end
+  alias Twitter.Blog.Like
+  alias Twitter.Accounts
+  alias Twitter.Accounts.User
 
   @doc """
   Returns the list of tweets.
 
   ## Examples
 
-      iex> list_tweets()
+      iex> list_tweets(%{"user_id" => 1})
       [%Tweet{}, ...]
 
+      iex> list_tweets(_)
+      [%Tweet{}, ...]
+
+      iex> list_tweets()
+      [%Tweet{}, ...]
   """
+  def list_tweets(%{"user_id" => user_id}) do
+    Repo.all(from t in Tweet,
+      where: t.user_id == ^user_id)
+  end
+
   def list_tweets(_params) do
     Repo.all(Tweet)
   end
@@ -56,6 +54,11 @@ defmodule Twitter.Blog do
 
   """
   def get_tweet!(id), do: Repo.get!(Tweet, id)
+
+  def get_tweet_with_liked_users!(id) do
+    Repo.get!(Tweet, id)
+    |> Repo.preload(:liked_by_users)
+  end
 
   def get_tweet_with_comments!(id) do
     Repo.get!(Tweet, id)
@@ -129,11 +132,14 @@ defmodule Twitter.Blog do
   end
 
   @doc """
-  Returns the list of comments by tweet.
+  Returns the list of comments.
 
   ## Examples
 
-      iex> list_comments()
+      iex> list_comments(%{"tweet_id" => 1})
+      [%Comment{}, ...]
+
+      iex> list_comments(_)
       [%Comment{}, ...]
 
   """
@@ -142,15 +148,6 @@ defmodule Twitter.Blog do
       where: t.tweet_id == ^tweet_id)
   end
 
-  @doc """
-  Returns the list of comments.
-
-  ## Examples
-
-      iex> list_comments()
-      [%Comment{}, ...]
-
-  """
   def list_comments(_params) do
     Repo.all(Comment)
   end
@@ -238,5 +235,24 @@ defmodule Twitter.Blog do
   """
   def change_comment(%Comment{} = comment, attrs \\ %{}) do
     Comment.changeset(comment, attrs)
+  end
+
+  def tweet_like(conn, tweet_id) do
+    Repo.insert!(%Like{tweet_id: to_int(tweet_id), user_id: conn.assigns.current_user.id},
+      on_conflict: :nothing)
+  end
+
+  def tweet_dislike(conn, tweet_id) do
+    Repo.delete_all(from l in Like,
+      where: l.tweet_id == ^to_int(tweet_id) and l.user_id == ^conn.assigns.current_user.id)
+  end
+
+  defp to_int(value) do
+    unless is_integer(value) do
+      {int, _} = Integer.parse(value)
+      int
+    else
+      value
+    end
   end
 end
