@@ -2,6 +2,11 @@ defmodule Twitter.Accounts.User do
   use Ecto.Schema
   import Ecto.Changeset
 
+  alias Twitter.Accounts.User
+  alias Twitter.Blog.Tweet
+  alias Twitter.Blog.Comment
+  alias Twitter.Blog.Subscription
+
   @data_required_fields ~w(name)a
   @data_optional_fields ~w(date_birth)a
 
@@ -13,9 +18,17 @@ defmodule Twitter.Accounts.User do
     field :date_birth, :date
     field :confirmed_at, :naive_datetime
 
-    has_many :tweets, Twitter.Blog.Tweet
-    has_many :comments, Twitter.Blog.Comment
-    many_to_many :liked_tweets, Twitter.Blog.Tweet, join_through: "likes"
+    has_many :tweets, Tweet
+    has_many :comments, Comment
+    many_to_many :liked_tweets, Tweet, join_through: "likes"
+    many_to_many :subscriptions,
+                 User,
+                 join_through: Subscription,
+                 join_keys: [subscription_id: :id, subscriber_id: :id]
+    many_to_many :subscribers,
+                 User,
+                 join_through: Subscription,
+                 join_keys: [subscriber_id: :id, subscription_id: :id]
 
     timestamps()
   end

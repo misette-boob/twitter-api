@@ -10,6 +10,7 @@ defmodule Twitter.Blog do
   alias Twitter.Blog.Tweet
   alias Twitter.Blog.Comment
   alias Twitter.Blog.Like
+  alias Twitter.Blog.Subscription
   alias Twitter.Accounts.User
 
   @doc """
@@ -256,5 +257,19 @@ defmodule Twitter.Blog do
     |> Repo.preload(:liked_tweets)
 
     current_user.liked_tweets
+  end
+
+  def subscribe(conn, user_id) do
+    %Subscription{}
+    |> Subscription.changeset(%{
+        subscription_id: maybe_to_int(user_id),
+        subscriber_id: conn.assigns.current_user.id
+      })
+    |> Repo.insert()
+  end
+
+  def unsubscribe(conn, user_id) do
+    Repo.delete_all(from l in Subscription,
+      where: l.subscription_id == ^maybe_to_int(user_id) and l.subscriber_id == ^conn.assigns.current_user.id)
   end
 end

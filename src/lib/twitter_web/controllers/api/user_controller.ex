@@ -3,6 +3,8 @@ defmodule TwitterWeb.Api.UserController do
 
   alias Twitter.Api.Accounts
   alias Twitter.Accounts.User
+  alias Twitter.Blog
+  alias Twitter.Blog.Subscription
 
   action_fallback TwitterWeb.FallbackController
 
@@ -29,6 +31,18 @@ defmodule TwitterWeb.Api.UserController do
 
     with {:ok, %User{} = user} <- Accounts.update_user(user, user_params) do
       render(conn, "show.json", user: user)
+    end
+  end
+
+  def subscribe(conn, %{"user_id" => user_id}) do
+    with {:ok, %Subscription{}} <- Blog.subscribe(conn, user_id) do
+      send_resp(conn, 201, "")
+    end
+  end
+
+  def unsubscribe(conn, %{"user_id" => user_id}) do
+    with {_, nil} <- Blog.unsubscribe(conn, user_id) do
+      send_resp(conn, 200, "")
     end
   end
 end
