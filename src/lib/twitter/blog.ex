@@ -250,4 +250,11 @@ defmodule Twitter.Blog do
     Repo.delete_all(from l in Like,
       where: l.tweet_id == ^maybe_to_int(tweet_id) and l.user_id == ^conn.assigns.current_user.id)
   end
+
+  def list_liked_tweets(conn) do
+    current_user = conn.assigns.current_user
+    |> Repo.preload(:liked_tweets)
+
+    current_user.liked_tweets
+  end
 end

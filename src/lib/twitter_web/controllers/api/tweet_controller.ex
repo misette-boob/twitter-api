@@ -62,4 +62,8 @@ defmodule TwitterWeb.Api.TweetController do
       send_resp(conn, 200, "")
     end
   end
+
+  def liked(conn, _params) do
+    render(conn, "index.json", tweets: Blog.list_liked_tweets(conn))
+  end
 end

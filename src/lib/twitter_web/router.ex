@@ -70,6 +70,7 @@ defmodule TwitterWeb.Router do
 
     post "/session/refresh", SessionController, :refresh
     resources "/users", UserController, only: [:index, :show, :update]
+    get "/tweets/liked", TweetController, :liked, as: :liked
     resources "/tweets", TweetController, except: [:new, :edit] do
       resources "/comments", CommentController, except: [:new, :edit]
       post "/like", TweetController, :like, as: :like
