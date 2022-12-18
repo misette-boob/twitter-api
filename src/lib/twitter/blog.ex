@@ -243,8 +243,12 @@ defmodule Twitter.Blog do
   end
 
   def tweet_like(conn, tweet_id) do
-    Repo.insert!(%Like{tweet_id: maybe_to_int(tweet_id), user_id: conn.assigns.current_user.id},
-      on_conflict: :nothing)
+    %Like{}
+    |> Like.changeset(%{
+        tweet_id: maybe_to_int(tweet_id),
+        user_id: conn.assigns.current_user.id
+      })
+    |> Repo.insert()
   end
 
   def tweet_dislike(conn, tweet_id) do
