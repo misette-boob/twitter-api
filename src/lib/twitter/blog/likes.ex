@@ -12,9 +12,11 @@ defmodule Twitter.Blog.Like do
     belongs_to :user, Twitter.Accounts.User
   end
 
-  def changeset(%Like{} = like, attr, _opts) do
+  def changeset(%Like{} = like, attr, _opts \\ []) do
     like
     |> cast(attr, [:tweet_id, :user_id])
     |> validate_required([:tweet_id, :user_id])
+    |> foreign_key_constraint(:tweet_id)
+    |> unique_constraint([:tweet_id, :user_id])
   end
 end

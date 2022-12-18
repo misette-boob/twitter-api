@@ -52,7 +52,7 @@ defmodule TwitterWeb.Api.TweetController do
   end
 
   def like(conn, %{"tweet_id" => tweet_id}) do
-    with %Blog.Like{} <- Blog.tweet_like(conn, tweet_id) do
+    with {:ok, %Blog.Like{}} <- Blog.tweet_like(conn, tweet_id) do
       send_resp(conn, 201, "")
     end
   end
