@@ -9,7 +9,6 @@ defmodule Twitter.Blog do
   alias Twitter.Blog.Tweet
   alias Twitter.Blog.Comment
   alias Twitter.Blog.Like
-  alias Twitter.Accounts
   alias Twitter.Accounts.User
 
   @doc """
