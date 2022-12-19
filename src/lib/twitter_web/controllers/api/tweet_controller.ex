@@ -66,4 +66,8 @@ defmodule TwitterWeb.Api.TweetController do
   def liked(conn, _params) do
     render(conn, "index.json", tweets: Blog.list_liked_tweets(conn))
   end
+
+  def subscriptions(conn, _params) do
+    render(conn, "index.json", tweets: Blog.list_subscriptions_tweets(conn))
+  end
 end

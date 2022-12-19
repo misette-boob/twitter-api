@@ -75,6 +75,7 @@ defmodule TwitterWeb.Router do
     end
 
     get "/tweets/liked", TweetController, :liked, as: :liked
+    get "/tweets/subscriptions", TweetController, :subscriptions, as: :subscriptions
     resources "/tweets", TweetController, except: [:new, :edit] do
       resources "/comments", CommentController, except: [:new, :edit]
       post "/like", TweetController, :like, as: :like
