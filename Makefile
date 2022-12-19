@@ -3,6 +3,8 @@ IMAGE = phoenix
 TAG = $(OWNER)/$(IMAGE)
 VERSION = 1.6.11
 
+DOCKER_COMPOSE = docker-compose -f docker-compose.yml
+
 all: test
 
 .DEFAULT: all
@@ -34,3 +36,15 @@ image-scan:
 	@trivy image $(TAG):$(VERSION)
 
 test: image-scan
+
+
+build:
+	> .env
+	$(DOCKER_COMPOSE) build
+	./mix deps.get
+	./mix ecto.create
+	./mix ecto.migrate
+	./mix run priv/repo/seeds.exs
+
+up:
+	$(DOCKER_COMPOSE) up
