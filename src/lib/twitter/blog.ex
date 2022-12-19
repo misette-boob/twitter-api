@@ -254,10 +254,14 @@ defmodule Twitter.Blog do
   end
 
   def tweet_like(conn, tweet_id) do
+    create_like(conn.assigns.current_user.id, maybe_to_int(tweet_id))
+  end
+
+  def create_like(executor_id, tweet_id) do
     %Like{}
     |> Like.changeset(%{
-        tweet_id: maybe_to_int(tweet_id),
-        user_id: conn.assigns.current_user.id
+        tweet_id: tweet_id,
+        user_id: executor_id
       })
     |> Repo.insert()
   end
@@ -275,10 +279,14 @@ defmodule Twitter.Blog do
   end
 
   def subscribe(conn, user_id) do
+    create_subscribe(conn.assigns.current_user.id, maybe_to_int(user_id))
+  end
+
+  def create_subscribe(subscriber_user_id, subscription_user_id) do
     %Subscription{}
     |> Subscription.changeset(%{
-        subscription_id: maybe_to_int(user_id),
-        subscriber_id: conn.assigns.current_user.id
+        subscription_id: subscription_user_id,
+        subscriber_id: subscriber_user_id
       })
     |> Repo.insert()
   end
