@@ -1,0 +1,1209 @@
+{
+	"info": {
+		"_postman_id": "b664909c-97ce-4ddc-a8b7-c6f6b850cef1",
+		"name": "Elixir",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "12272515"
+	},
+	"item": [
+		{
+			"name": "Session",
+			"item": [
+				{
+					"name": "init",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const res = JSON.parse(responseBody);",
+									"",
+									"pm.test('Check Status', () => {",
+									"    pm.expect(pm.response.code).to.eql(201);",
+									"})",
+									"",
+									"pm.test(\"Session init\", () => {",
+									"    pm.expect(res).to.have.property('access_token');",
+									"    pm.expect(res).to.have.property('refresh_token');",
+									"});",
+									"",
+									"pm.collectionVariables.set(\"access_token\", res.access_token);",
+									"pm.collectionVariables.set(\"refresh_token\", res.refresh_token);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"{{user_email}}\",\n    \"password\": \"{{user_password}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/session/new",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"session",
+								"new"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "refresh",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const res = JSON.parse(responseBody);",
+									"",
+									"pm.test('Check Status', () => {",
+									"    pm.expect(pm.response.code).to.eql(201);",
+									"})",
+									"",
+									"pm.test(\"Session refresh\", function () {",
+									"    pm.expect(res).to.have.property('access_token');",
+									"});",
+									"",
+									"pm.collectionVariables.set(\"access_token\", res.access_token);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"refresh_token\": \"{{refresh_token}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/session/refresh",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"session",
+								"refresh"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "create",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const req = JSON.parse(pm.request.body.raw);",
+									"const res = JSON.parse(responseBody);",
+									"",
+									"pm.test('Check Status', () => {",
+									"    pm.expect(pm.response.code).to.eql(201);",
+									"})",
+									"",
+									"pm.test(\"Has user\", function () {",
+									"    pm.expect(res.data).to.have.property('id');",
+									"    pm.expect(res.data).to.have.property('name');",
+									"    pm.expect(res.data).to.have.property('email');",
+									"});",
+									"",
+									"pm.test(\"Created corrected\", function () {",
+									"    pm.expect(res.data.email).to.eql(req.user.email);",
+									"    pm.expect(res.data.name).to.eql(req.user.name);",
+									"});",
+									"",
+									"pm.collectionVariables.set(\"user_id\", res.data.id);",
+									"pm.collectionVariables.set(\"user_email\", res.data.email);",
+									"pm.collectionVariables.set(\"user_password\", req.user.password);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"user\": {\n        \"email\": \"{{$randomEmail}}\",\n        \"password\": \"{{$randomPassword}}\",\n        \"name\": \"{{$randomUserName}}\"\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/users",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const req = JSON.parse(pm.request.body.raw);",
+									"const res = JSON.parse(responseBody);",
+									"",
+									"pm.test('Check Status', () => {",
+									"    pm.expect(pm.response.code).to.eql(200);",
+									"})",
+									"",
+									"pm.test(\"Has user\", function () {",
+									"    pm.expect(res.data).to.have.property('id');",
+									"    pm.expect(res.data).to.have.property('name');",
+									"    pm.expect(res.data).to.have.property('email');",
+									"});",
+									"",
+									"pm.test(\"Updated\", function () {",
+									"    pm.expect(res.data.name).to.eql(req.user.name);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"user\": {\n        \"name\": \"{{$randomUserName}}\"\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/users/{{user_id}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"{{user_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "index",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const res = JSON.parse(responseBody);",
+									"",
+									"pm.test('Check Status', () => {",
+									"    pm.expect(pm.response.code).to.eql(200);",
+									"})",
+									"",
+									"pm.test(\"Has users\", function () {",
+									"    pm.expect(res.data[0]).to.have.property('id');",
+									"    pm.expect(res.data[0]).to.have.property('name');",
+									"    pm.expect(res.data[0]).to.have.property('email');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/users",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "show",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const res = JSON.parse(responseBody);",
+									"",
+									"pm.test('Check Status', () => {",
+									"    pm.expect(pm.response.code).to.eql(200);",
+									"})",
+									"",
+									"pm.test(\"Has user\", function () {",
+									"    pm.expect(res.data).to.have.property('id');",
+									"    pm.expect(res.data).to.have.property('name');",
+									"    pm.expect(res.data).to.have.property('email');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/users/{{user_id}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"{{user_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "subscribe",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Check Status', () => {",
+									"    pm.expect(pm.response.code).to.eql(201);",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/users/{{user_id}}/subscription",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"{{user_id}}",
+								"subscription"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "subscribe",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Check Status', () => {",
+									"    pm.expect(pm.response.code).to.eql(200);",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/users/{{user_id}}/subscription",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"{{user_id}}",
+								"subscription"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Tweets",
+			"item": [
+				{
+					"name": "create",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const req = JSON.parse(pm.request.body.raw);",
+									"const res = JSON.parse(responseBody);",
+									"",
+									"pm.test('Check Status', () => {",
+									"    pm.expect(pm.response.code).to.eql(201);",
+									"})",
+									"",
+									"pm.test(\"Has tweet\", function () {",
+									"    pm.expect(res.data).to.have.property('id');",
+									"    pm.expect(res.data).to.have.property('title');",
+									"    pm.expect(res.data).to.have.property('body');",
+									"    pm.expect(res.data).to.have.property('author_id');",
+									"});",
+									"",
+									"pm.test(\"Created corrected\", function () {",
+									"    pm.expect(res.data.title).to.eql(req.tweet.title);",
+									"    pm.expect(res.data.body).to.eql(req.tweet.body);",
+									"});",
+									"",
+									"pm.collectionVariables.set(\"tweet_id\", res.data.id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"tweet\": {\n        \"title\": \"{{$randomWord}}\",\n        \"body\": \"{{$randomLoremWords}}\"\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/tweets",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"tweets"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const req = JSON.parse(pm.request.body.raw);",
+									"const res = JSON.parse(responseBody);",
+									"",
+									"pm.test('Check Status', () => {",
+									"    pm.expect(pm.response.code).to.eql(200);",
+									"})",
+									"",
+									"pm.test(\"Has tweet\", function () {",
+									"    pm.expect(res.data).to.have.property('id');",
+									"    pm.expect(res.data).to.have.property('title');",
+									"    pm.expect(res.data).to.have.property('body');",
+									"    pm.expect(res.data).to.have.property('author_id');",
+									"});",
+									"",
+									"pm.test(\"Created corrected\", function () {",
+									"    pm.expect(res.data.title).to.eql(req.tweet.title);",
+									"    pm.expect(res.data.body).to.eql(req.tweet.body);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"tweet\": {\n        \"title\": \"{{$randomWord}}\",\n        \"body\": \"{{$randomLoremWords}}\"\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/tweets/{{tweet_id}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"tweets",
+								"{{tweet_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "index",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const res = JSON.parse(responseBody);",
+									"",
+									"pm.test('Check Status', () => {",
+									"    pm.expect(pm.response.code).to.eql(200);",
+									"})",
+									"",
+									"pm.test(\"Has tweets\", function () {",
+									"    pm.expect(res.data[0]).to.have.property('id');",
+									"    pm.expect(res.data[0]).to.have.property('title');",
+									"    pm.expect(res.data[0]).to.have.property('body');",
+									"    pm.expect(res.data[0]).to.have.property('author_id');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/api/tweets",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"tweets"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "index liked",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const res = JSON.parse(responseBody);",
+									"",
+									"pm.test('Check Status', () => {",
+									"    pm.expect(pm.response.code).to.eql(200);",
+									"})",
+									"",
+									"pm.test(\"Maybe has tweets\", function () {",
+									"    if (res.data.lenght > 0) {",
+									"        pm.expect(res.data[0]).to.have.property('id');",
+									"        pm.expect(res.data[0]).to.have.property('title');",
+									"        pm.expect(res.data[0]).to.have.property('body');",
+									"        pm.expect(res.data[0]).to.have.property('author_id');",
+									"    }",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/tweets/liked",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"tweets",
+								"liked"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "index subscriptions",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const res = JSON.parse(responseBody);",
+									"",
+									"pm.test('Check Status', () => {",
+									"    pm.expect(pm.response.code).to.eql(200);",
+									"})",
+									"",
+									"pm.test(\"Maybe has tweets\", function () {",
+									"    if (res.data.lenght > 0) {",
+									"        pm.expect(res.data[0]).to.have.property('id');",
+									"        pm.expect(res.data[0]).to.have.property('title');",
+									"        pm.expect(res.data[0]).to.have.property('body');",
+									"        pm.expect(res.data[0]).to.have.property('author_id');",
+									"    }",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/tweets/subscriptions",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"tweets",
+								"subscriptions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "show",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const res = JSON.parse(responseBody);",
+									"",
+									"pm.test('Check Status', () => {",
+									"    pm.expect(pm.response.code).to.eql(200);",
+									"})",
+									"",
+									"pm.test(\"Has tweet\", function () {",
+									"    pm.expect(res.data).to.have.property('id');",
+									"    pm.expect(res.data).to.have.property('title');",
+									"    pm.expect(res.data).to.have.property('body');",
+									"    pm.expect(res.data).to.have.property('author_id');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/tweets/{{tweet_id}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"tweets",
+								"{{tweet_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "show with comments",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const res = JSON.parse(responseBody);",
+									"",
+									"pm.test('Check Status', () => {",
+									"    pm.expect(pm.response.code).to.eql(200);",
+									"})",
+									"",
+									"pm.test(\"Has tweet\", function () {",
+									"    pm.expect(res.data).to.have.property('id');",
+									"    pm.expect(res.data).to.have.property('title');",
+									"    pm.expect(res.data).to.have.property('body');",
+									"    pm.expect(res.data).to.have.property('author_id');",
+									"});",
+									"",
+									"pm.test(\"Has tweet\", function () {",
+									"    pm.expect(res.data).to.have.property('comments');",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/api/tweets/{{tweet_id}}?comments=1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"tweets",
+								"{{tweet_id}}"
+							],
+							"query": [
+								{
+									"key": "comments",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Check Status', () => {",
+									"    pm.expect(pm.response.code).to.eql(204);",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/tweets/{{tweet_id}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"tweets",
+								"{{tweet_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "like",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Check Status', () => {",
+									"    pm.expect(pm.response.code).to.eql(201);",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/tweets/{{tweet_id}}/like",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"tweets",
+								"{{tweet_id}}",
+								"like"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "dislike",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Check Status', () => {",
+									"    pm.expect(pm.response.code).to.eql(200);",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/tweets/{{tweet_id}}/like",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"tweets",
+								"{{tweet_id}}",
+								"like"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Comments",
+			"item": [
+				{
+					"name": "create",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const req = JSON.parse(pm.request.body.raw);",
+									"const res = JSON.parse(responseBody);",
+									"",
+									"pm.test('Check Status', () => {",
+									"    pm.expect(pm.response.code).to.eql(201);",
+									"})",
+									"",
+									"pm.test(\"Has tweet\", function () {",
+									"    pm.expect(res.data).to.have.property('id');",
+									"    pm.expect(res.data).to.have.property('body');",
+									"    pm.expect(res.data).to.have.property('author_id');",
+									"    pm.expect(res.data).to.have.property('tweet_id');",
+									"});",
+									"",
+									"pm.test(\"Created corrected\", function () {",
+									"    pm.expect(res.body).to.eql(req.body);",
+									"});",
+									"",
+									"pm.collectionVariables.set(\"comment_id\", res.data.id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"comment\": {\n        \"body\": \"{{$randomLoremWords}}\"\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/tweets/{{tweet_id}}/comments",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"tweets",
+								"{{tweet_id}}",
+								"comments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const req = JSON.parse(pm.request.body.raw);",
+									"const res = JSON.parse(responseBody);",
+									"",
+									"pm.test('Check Status', () => {",
+									"    pm.expect(pm.response.code).to.eql(200);",
+									"})",
+									"",
+									"pm.test(\"Has tweet\", function () {",
+									"    pm.expect(res.data).to.have.property('id');",
+									"    pm.expect(res.data).to.have.property('body');",
+									"    pm.expect(res.data).to.have.property('author_id');",
+									"    pm.expect(res.data).to.have.property('tweet_id');",
+									"});",
+									"",
+									"pm.test(\"Created corrected\", function () {",
+									"    pm.expect(res.body).to.eql(req.body);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"comment\": {\n        \"body\": \"{{$randomLoremWords}}\"\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/tweets/{{tweet_id}}/comments/{{comment_id}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"tweets",
+								"{{tweet_id}}",
+								"comments",
+								"{{comment_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "index",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const res = JSON.parse(responseBody);",
+									"",
+									"pm.test('Check Status', () => {",
+									"    pm.expect(pm.response.code).to.eql(200);",
+									"})",
+									"",
+									"pm.test(\"Has comments\", function () {",
+									"    pm.expect(res.data[0]).to.have.property('id');",
+									"    pm.expect(res.data[0]).to.have.property('body');",
+									"    pm.expect(res.data[0]).to.have.property('author_id');",
+									"    pm.expect(res.data[0]).to.have.property('tweet_id');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/api/comments",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"comments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "index by tweet",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const res = JSON.parse(responseBody);",
+									"",
+									"pm.test('Check Status', () => {",
+									"    pm.expect(pm.response.code).to.eql(200);",
+									"})",
+									"",
+									"pm.test(\"Has comments\", function () {",
+									"    pm.expect(res.data[0]).to.have.property('id');",
+									"    pm.expect(res.data[0]).to.have.property('body');",
+									"    pm.expect(res.data[0]).to.have.property('author_id');",
+									"    pm.expect(res.data[0]).to.have.property('tweet_id');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/api/tweets/{{tweet_id}}/comments",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"tweets",
+								"{{tweet_id}}",
+								"comments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "show",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const res = JSON.parse(responseBody);",
+									"",
+									"pm.test('Check Status', () => {",
+									"    pm.expect(pm.response.code).to.eql(200);",
+									"})",
+									"",
+									"pm.test(\"Has user\", function () {",
+									"    pm.expect(res.data).to.have.property('id');",
+									"    pm.expect(res.data).to.have.property('body');",
+									"    pm.expect(res.data).to.have.property('author_id');",
+									"    pm.expect(res.data).to.have.property('tweet_id');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/api/tweets/{{tweet_id}}/comments/{{comment_id}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"tweets",
+								"{{tweet_id}}",
+								"comments",
+								"{{comment_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Check Status', () => {",
+									"    pm.expect(pm.response.code).to.eql(204);",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/tweets/{{tweet_id}}/comments/{{comment_id}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"tweets",
+								"{{tweet_id}}",
+								"comments",
+								"{{comment_id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{access_token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "url",
+			"value": "http://localhost:4000",
+			"type": "string"
+		},
+		{
+			"key": "access_token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "refresh_token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "user_id",
+			"value": "1",
+			"type": "string"
+		},
+		{
+			"key": "user_email",
+			"value": "test@test.ru",
+			"type": "string"
+		},
+		{
+			"key": "user_password",
+			"value": "password",
+			"type": "string"
+		},
+		{
+			"key": "tweet_id",
+			"value": "1",
+			"type": "string"
+		},
+		{
+			"key": "comment_id",
+			"value": "1"
+		}
+	]
+}
