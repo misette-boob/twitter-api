@@ -15,7 +15,8 @@ defmodule TwitterWeb.Api.CommentView do
       id: comment.id,
       body: comment.body,
       author_id: comment.user_id,
-      tweet_id: comment.tweet_id
+      tweet_id: comment.tweet_id,
+      inserted_at: comment.inserted_at
     }
   end
 end

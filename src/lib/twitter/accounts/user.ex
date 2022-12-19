@@ -52,7 +52,7 @@ defmodule Twitter.Accounts.User do
   """
   def registration_changeset(user, attrs, opts \\ []) do
     user
-    |> cast(attrs, [:email, :password, :name])
+    |> cast(attrs, [:email, :password, :name, :date_birth])
     |> validate_email()
     |> validate_password(opts)
     |> validate_name()
