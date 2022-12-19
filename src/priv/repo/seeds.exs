@@ -175,8 +175,11 @@ comment_list = Twitter.DatabaseSeeder.create_comments(user_list, tweet_list)
 suscription_list = Twitter.DatabaseSeeder.create_subscriptions(user_list)
 like_list = Twitter.DatabaseSeeder.create_likes(user_list, tweet_list)
 
+:timer.sleep(2000)
+
 IO.inspect(Enum.count(user_list), label: "Created users")
 IO.inspect(Enum.count(tweet_list), label: "Created tweets")
 IO.inspect(Enum.count(comment_list), label: "Created comments")
 IO.inspect(Enum.count(suscription_list), label: "Created subscriptions")
 IO.inspect(Enum.count(like_list), label: "Created likes")
+IO.inspect(%{email: "test@test.ru", password: "password"}, label: "Test User")
