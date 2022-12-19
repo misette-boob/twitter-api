@@ -1,0 +1,30 @@
+<h1>Listing Tweets</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Title</th>
+      <th>Body</th>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for tweet <- @tweets do %>
+    <tr>
+      <td><%= tweet.title %></td>
+      <td><%= tweet.body %></td>
+
+      <td>
+        <span><%= link "Show", to: Routes.tweet_path(@conn, :show, tweet) %></span>
+        <%= if tweet.user_id !== nil && @current_user_id === tweet.user_id do %>
+          <span><%= link "Edit", to: Routes.tweet_path(@conn, :edit, tweet) %></span>
+          <span><%= link "Delete", to: Routes.tweet_path(@conn, :delete, tweet), method: :delete, data: [confirm: "Are you sure?"] %></span>
+        <% end %>
+      </td>
+    </tr>
+<% end %>
+  </tbody>
+</table>
+
+<span><%= link "New Tweet", to: Routes.tweet_path(@conn, :new) %></span>
