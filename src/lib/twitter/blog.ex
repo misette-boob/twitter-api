@@ -70,6 +70,17 @@ defmodule Twitter.Blog do
     |> Repo.preload(:comments)
   end
 
+  def list_subscriptions_tweets(conn) do
+    Repo.all(
+      from t in Tweet,
+      join: s in Subscription,
+      on: t.user_id == s.subscription_id,
+      where: s.subscriber_id == ^conn.assigns.current_user.id,
+      select: t,
+      order_by: [desc: t.inserted_at]
+    )
+  end
+
   @doc """
   Creates a tweet.
 
