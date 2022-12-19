@@ -16,7 +16,7 @@ defmodule TwitterWeb.UserSettingsController do
     user = conn.assigns.current_user
 
     case Accounts.update_user_data(user, user_params) do
-      {:ok, applied_user} ->
+      {:ok, _applied_user} ->
         conn
         |> put_flash(:info, "User changed successfully.")
         |> redirect(to: Routes.user_settings_path(conn, :edit))
